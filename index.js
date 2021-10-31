@@ -77,8 +77,8 @@ async function main () {
     })
 
     
-    // route to update question
-    app.put("/update/:questionid", async(req, res) => {
+    // route to update question (prompt and suggested_answer only)
+    app.patch("/update/:questionid", async(req, res) => {
         let db = MongoUtil.getDB()
         let result = await db.collection("question_bank").updateOne({
             '_id': ObjectId(req.params.questionid)
