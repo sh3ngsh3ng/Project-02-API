@@ -114,6 +114,43 @@ async function main () {
         res.send(result2)
     })
 
+    // route to update all the saved questions
+    app.patch("/savequestions", async (req,res) => {
+        let db = MongoUtil.getDB()
+
+
+        let oldContributedQuestions = await db.collection("all_users").findOne({
+            '_id': ObjectId("6177752722b1a73b99a4038a")
+        })
+
+
+        let newContributions = req.body.savedQuestions
+        oldContributedQuestions = oldContributedQuestions.saved_questions
+
+        for (let newQuestion of newContributions) {
+            ObjectId(newQuestion)
+            if (!oldContributedQuestions.includes(newQuestion)) {
+                newQuestion = ObjectId(newQuestion)
+                oldContributedQuestions.push(newQuestion)
+            }
+        }
+        let newContributedQuestions = oldContributedQuestions
+
+        let results = await db.collection("all_users").updateOne({
+            '_id': ObjectId("6177752722b1a73b99a4038a")
+        }, {
+            '$set': {
+                'saved_questions': newContributedQuestions
+            }
+        })
+
+        res.status(200)
+        res.json(results)
+    })
+
+
+    // route to display all saved questions
+    
 }
 
 main ()
