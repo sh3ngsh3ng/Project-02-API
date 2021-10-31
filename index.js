@@ -150,7 +150,26 @@ async function main () {
 
 
     // route to display all saved questions
-    
+    app.get("/savedquestions", async (req,res) => {
+        let db = MongoUtil.getDB()
+
+        let savedQuestions = await db.collection("all_users").findOne({
+            '_id': ObjectId("6177752722b1a73b99a4038a")
+        })
+
+        savedQuestions = savedQuestions.saved_questions
+
+        let arrayOfSavedQuestions = []
+        for (let ObjId of savedQuestions) {
+            let results = await db.collection("question_bank").findOne({
+                '_id': ObjId
+            })
+            arrayOfSavedQuestions.push(results)
+        }
+        res.status(200)
+        res.json(arrayOfSavedQuestions)
+
+    })
 }
 
 main ()
